@@ -8,10 +8,10 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Interaction Settings")]
     [SerializeField] private float interactionRange = 2f;
     [SerializeField] private LayerMask interactableLayer;
-    
+
     [Header("Raycast Settings")]
     [SerializeField] private Transform cameraTransform;
-    
+
     private IInteractable currentInteractable;
 
     public System.Action OnInteractableDetected;
@@ -28,7 +28,11 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         DetectInteractable();
-        
+        HandleInput();
+    }
+
+    private void HandleInput()
+    {
         if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             TryInteract();
@@ -38,20 +42,30 @@ public class PlayerInteraction : MonoBehaviour
     private void DetectInteractable()
     {
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, interactionRange, interactableLayer))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactableLayer))
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
-            
-            if (interactable != null)
+            if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
             {
-                currentInteractable = interactable;
+                if (currentInteractable != interactable)
+                {
+                    currentInteractable = interactable;
+                    OnInteractableDetected?.Invoke();
+                }
                 return;
             }
         }
 
-        currentInteractable = null;
+        ClearCurrentInteractable();
+    }
+
+    private void ClearCurrentInteractable()
+    {
+        if (currentInteractable != null)
+        {
+            currentInteractable = null;
+            OnInteractableLost?.Invoke();
+        }
     }
 
     private void TryInteract()
