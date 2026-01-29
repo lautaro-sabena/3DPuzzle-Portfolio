@@ -18,6 +18,7 @@ public class MovingPlatform : MonoBehaviour
     private bool isActive;
     public bool IsMoving { get; private set; }
     private Vector3 targetPosition;
+    private bool movingToEnd = true;
 
     private void Awake()
     {
@@ -55,6 +56,9 @@ public class MovingPlatform : MonoBehaviour
         {
             isActive = false;
             IsMoving = false;
+            
+            movingToEnd = !movingToEnd;
+            targetPosition = movingToEnd ? endPoint.position : startPoint.position;
         }
         else
         {
