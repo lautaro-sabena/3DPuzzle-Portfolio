@@ -16,6 +16,7 @@ public class PlayerInteraction : MonoBehaviour
 
     public System.Action OnInteractableDetected;
     public System.Action OnInteractableLost;
+    private InteractionUI _interactionUI;
 
     void Start()
     {
@@ -23,6 +24,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             cameraTransform = Camera.main.transform;
         }
+        _interactionUI = FindObjectOfType<InteractionUI>();
     }
 
     void Update()
@@ -51,6 +53,7 @@ public class PlayerInteraction : MonoBehaviour
                 {
                     currentInteractable = interactable;
                     OnInteractableDetected?.Invoke();
+                    _interactionUI.ShowPrompt();
                 }
                 return;
             }
@@ -65,6 +68,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             currentInteractable = null;
             OnInteractableLost?.Invoke();
+            _interactionUI.HidePrompt();
         }
     }
 
