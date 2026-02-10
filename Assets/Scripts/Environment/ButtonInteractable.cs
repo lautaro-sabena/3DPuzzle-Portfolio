@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ButtonInteractable : MonoBehaviour, IInteractable
 {
-    [SerializeField] private GameEvent onPressedEvent;
+    [SerializeField] private GameEvent onPressedGameEvent;
+    [SerializeField] private UnityEvent onPressedUnityEvent;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip interactClip;
     private Color originalColor;
@@ -19,7 +21,8 @@ public class ButtonInteractable : MonoBehaviour, IInteractable
     {
         if(audioSource != null && interactClip != null) audioSource.PlayOneShot(interactClip);
         StartCoroutine(Flash());
-        onPressedEvent?.Raise();
+        onPressedGameEvent?.Raise();
+        onPressedUnityEvent?.Invoke();
     }
 
     IEnumerator Flash()

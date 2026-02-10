@@ -14,6 +14,7 @@ public class MovingPlatform : MonoBehaviour
 
     [Header("Events")]
     [SerializeField] private GameEvent activateEvent;
+    [SerializeField] private GameEvent callEvent;
 
     private bool isActive;
     public bool IsMoving { get; private set; }
@@ -32,6 +33,8 @@ public class MovingPlatform : MonoBehaviour
     {
         if (activateEvent != null)
             activateEvent.RegisterListener(Activate);
+        if (callEvent != null)
+            callEvent.RegisterListener(Call);
         lastPosition = transform.position;
     }
 
@@ -39,6 +42,8 @@ public class MovingPlatform : MonoBehaviour
     {
         if (activateEvent != null)
             activateEvent.UnregisterListener(Activate);
+        if (callEvent != null)
+            callEvent.UnregisterListener(Call);
     }
 
     private void Update()
@@ -76,6 +81,13 @@ public class MovingPlatform : MonoBehaviour
     {
         isActive = true;
     }
-   
+
+    private void Call()
+    {
+        if (!movingToEnd && !IsMoving)
+        {
+            isActive = true;
+        }
+    }
 
 }
