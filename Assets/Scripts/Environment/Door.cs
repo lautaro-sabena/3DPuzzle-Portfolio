@@ -50,7 +50,6 @@ public class Door : MonoBehaviour
     {
         if (currentState == DoorState.Locked) return;
         currentState = DoorState.Open;
-        Debug.Log($"{name} opened");
     }
 
     public void Close()
